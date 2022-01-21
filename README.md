@@ -1,2 +1,2 @@
 # Twitter-Bot
-A simple Twitter bot
+A simple Twitter bot designed for retweeting tweets that contain specific keywords. 
