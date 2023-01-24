@@ -1,26 +1,24 @@
-import time
+import os
 import tweepy
+import json
+import time
 
-# Twitter account keys
-key = 'API_KEY'
-secret_key = 'API_INSERT_KEY'
-secret_token = 'SECRET_TOKEN'
-token = 'TOKEN'
 
-auth = tweepy.OAuthHandler(key, secret_key)
+def lambda_handler(event, context):
+    consumer_key = os.getenv("key")
+    consumer_secret = os.getenv("secret_key")
+    access_token = os.getenv("token")
+    access_token_secret = os.getenv("secret_token")
 
-auth.set_access_token(token, secret_token)
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tweepy.API(auth)
 
-# API for retweet functionality
-api = tweepy.API(auth, wait_on_rate_limit=True)
-
-# retweet functionality with 100 tweets every 600 seconds
-for tweet in tweepy.Cursor(api.search_tweets, q = 'The Sims 4',lang='en').items(100):
-    try:
-        tweet.retweet()
-        print("Tweet has been retweeted")
-        time.sleep(600)
-    except tweepy.TweepyException as e:
-        print(e)
-    except StopIteration:
-        break
+    for tweet in tweepy.Cursor(api.search, q = 'Sims 4', lang='en').items(2):
+      try:
+         tweet.retweet()
+      except tweepy.TweepyException as e:
+         print(e)
+      except StopIteration:
+          break
+    return {"statusCode": 200}
